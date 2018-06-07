@@ -1,0 +1,18 @@
+app_name = "golang-shorturl"
+[log]
+log_name = "shorturl"
+log_path = "logs"
+[mysql]
+[mysql.test]
+ip = "127.0.0.1"
+port = "3306"
+username = "root"
+password = "123456"
+database = "test"
+chartset = "utf8"
+maxIdle = 2
+maxOpen = 500
+maxLifetime = 60
+[redis]
+[redis.user]
+addrss = "127.0.0.1:6379"

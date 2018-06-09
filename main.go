@@ -8,4 +8,5 @@ import (
 func main() {
 	goboot.Run("config.toml")
 	app.NewModel().GetAllShorturl()
+	app.NewModel().GetShorturl()
 }

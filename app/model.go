@@ -29,3 +29,21 @@ func (m *Model) GetAllShorturl() {
 	}
 	fmt.Println(shorturl)
 }
+
+func (m *Model) GetShorturl() {
+	var shorturls []Shorturl
+	rows, err := m.db.Query("select * from short_url")
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var shorturl Shorturl
+		rows.Scan(&shorturl.Id, &shorturl.ShortUrl, &shorturl.LongUrl)
+		shorturls = append(shorturls, shorturl)
+	}
+	if err = rows.Err(); err != nil {
+		panic(err)
+	}
+	fmt.Println(shorturls)
+}

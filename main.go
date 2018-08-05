@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/convee/goboot"
-	"github.com/convee/shorturl/app"
 	"github.com/convee/shorturl/util"
 )
 
@@ -32,7 +31,7 @@ func startHTTPServer(addr string) {
 }
 func GenShort() {
 	longUrl := "https://www.baidu.com"
-	shortUrl := app.GeneralShortgUrl(longUrl)
+	shortUrl := util.GeneralShortgUrl(longUrl)
 	fmt.Println(shortUrl)
 }
 

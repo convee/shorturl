@@ -30,6 +30,18 @@ func (m *Model) GetAllShorturl(short string) Shorturl {
 	return shorturl
 }
 
+func (m *Model) InsertShorturl(shorturl string, longurl string) (id int64) {
+	rs, err := m.db.Exec("insert into short_url (long_url, short_url) values (?, ?)", longurl, shorturl)
+	if err != nil {
+		panic(err)
+	}
+	id, err = rs.LastInsertId()
+	if err != nil {
+		panic(err)
+	}
+	return
+}
+
 func (m *Model) GetShorturl() {
 	var shorturls []Shorturl
 	rows, err := m.db.Query("select * from short_url")

@@ -21,13 +21,13 @@ func NewModel() *Model {
 	return &Model{db: mysql.New("test")}
 }
 
-func (m *Model) GetAllShorturl() {
+func (m *Model) GetAllShorturl(short string) Shorturl {
 	var shorturl Shorturl
-	err := m.db.QueryRow("select id,long_url,short_url from short_url where id=?", 1).Scan(&shorturl.Id, &shorturl.LongUrl, &shorturl.ShortUrl)
+	err := m.db.QueryRow("select id,long_url,short_url from short_url where short_url=?", short).Scan(&shorturl.Id, &shorturl.LongUrl, &shorturl.ShortUrl)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(shorturl)
+	return shorturl
 }
 
 func (m *Model) GetShorturl() {

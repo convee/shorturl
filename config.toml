@@ -7,12 +7,15 @@ log_path = "logs"
 ip = "127.0.0.1"
 port = "3306"
 username = "root"
-password = "123456"
+password = "password"
 database = "test"
 chartset = "utf8"
 maxIdle = 2
 maxOpen = 500
 maxLifetime = 60
 [redis]
-[redis.user]
-addrss = "127.0.0.1:6379"
+[redis.default]
+Address = "127.0.0.1:6379"
+MaxIdle =3 #最大空闲连接数
+MaxActive = 100
+IdleTimeout = 240 #最大空闲连接时间

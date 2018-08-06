@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/convee/goboot"
+	"github.com/convee/shorturl/cache"
 	"github.com/convee/shorturl/util"
 )
 
@@ -16,6 +17,7 @@ var (
 func main() {
 	flag.Parse()
 	goboot.Run("config.toml")
+	cache.SetShortUrlCache("abc", "https://convee.cn")
 	DecimalTo62()
 	startHTTPServer(addr)
 

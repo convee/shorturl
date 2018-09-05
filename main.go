@@ -11,10 +11,11 @@ import (
 )
 
 var (
-	addr = *flag.String("addr", "127.0.0.1:8001", "http server")
+	addr string
 )
 
 func main() {
+	flag.StringVar(&addr, "addr", "127.0.0.1:8001", "http server")
 	flag.Parse()
 	goboot.Run("config.toml")
 	cache.SetShortUrlCache("abc", "https://convee.cn")
@@ -29,12 +30,21 @@ func index(w http.ResponseWriter, r *http.Request) {
 func startHTTPServer(addr string) {
 	fmt.Println("http server starting....")
 	http.HandleFunc("/", index)
+	http.HandleFunc("/gen", genShort)
+	http.HandleFunc("/jump", jump)
 	http.ListenAndServe(addr, nil)
 }
-func GenShort() {
+
+//长网址转换成短网址
+func genShort(w http.ResponseWriter, r *http.Request) {
 	longUrl := "https://www.baidu.com"
 	shortUrl := util.GeneralShortgUrl(longUrl)
 	fmt.Println(shortUrl)
+}
+
+//短网址跳转
+func jump(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("hello jump")
 }
 
 func DecimalTo62() {

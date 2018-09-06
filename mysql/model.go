@@ -13,8 +13,8 @@ type Model struct {
 
 type Shorturl struct {
 	Id       int    `json:"id"`
-	ShortUrl string `json:"short_url"`
-	LongUrl  string `json:"long_url"`
+	Shorturl string `json:"short_url"`
+	Longurl  string `json:"long_url"`
 }
 
 func NewModel() *Model {
@@ -23,7 +23,7 @@ func NewModel() *Model {
 
 func (m *Model) GetAllShorturl(short string) Shorturl {
 	var shorturl Shorturl
-	err := m.db.QueryRow("select id,long_url,short_url from short_url where short_url=?", short).Scan(&shorturl.Id, &shorturl.LongUrl, &shorturl.ShortUrl)
+	err := m.db.QueryRow("select id,long_url,short_url from short_url where short_url=?", short).Scan(&shorturl.Id, &shorturl.Longurl, &shorturl.Shorturl)
 	if err != nil {
 		panic(err)
 	}
@@ -51,7 +51,7 @@ func (m *Model) GetShorturl() {
 	defer rows.Close()
 	for rows.Next() {
 		var shorturl Shorturl
-		rows.Scan(&shorturl.Id, &shorturl.ShortUrl, &shorturl.LongUrl)
+		rows.Scan(&shorturl.Id, &shorturl.Shorturl, &shorturl.Longurl)
 		shorturls = append(shorturls, shorturl)
 	}
 	if err = rows.Err(); err != nil {

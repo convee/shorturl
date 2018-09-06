@@ -6,7 +6,9 @@ import (
 	"net/http"
 
 	"github.com/convee/goboot"
+	"github.com/convee/goboot/logger"
 	"github.com/convee/shorturl/cache"
+	"github.com/convee/shorturl/mysql"
 	"github.com/convee/shorturl/util"
 )
 
@@ -30,21 +32,51 @@ func index(w http.ResponseWriter, r *http.Request) {
 func startHTTPServer(addr string) {
 	fmt.Println("http server starting....")
 	http.HandleFunc("/", index)
-	http.HandleFunc("/gen", genShort)
-	http.HandleFunc("/jump", jump)
+	http.HandleFunc("/genShorturl", genShorturl)
+	http.HandleFunc("/getLongurl", getLongurl)
 	http.ListenAndServe(addr, nil)
 }
 
 //长网址转换成短网址
-func genShort(w http.ResponseWriter, r *http.Request) {
-	longUrl := "https://www.baidu.com"
-	shortUrl := util.GeneralShortgUrl(longUrl)
-	fmt.Println(shortUrl)
+func genShorturl(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	longurl := r.Form["longurl"][0]
+	shorturl := util.GeneralShortgUrl(longurl)
+	fmt.Println(shorturl)
 }
 
-//短网址跳转
-func jump(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("hello jump")
+//短网址获取长网址
+func getLongurl(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	shorturl := r.Form["shorturl"][0]
+	var longurl string
+	longurlCache := cache.GetLongurlByShorturl(shorturl)
+	logger.Info(fmt.Sprintf("longurlCache:%s", longurlCache))
+	if longurlCache != "" {
+		longurl = longurlCache
+	} else {
+		longurlData := mysql.NewModel().GetAllShorturl(shorturl).Longurl
+		if longurlData != "" {
+			cache.SetShortUrlCache(shorturl, longurl)
+			longurl = longurlData
+		}
+	}
+	if longurl != "" {
+		var response map[string]string
+		response["longurl"] = longurl
+		response["shorturl"] = shorturl
+		util.JsonReturn(w, util.Json{
+			Error: 0,
+			Msg:   "ok",
+			Data:  response,
+		})
+	} else {
+		util.JsonReturn(w, util.Json{
+			Error: 1,
+			Msg:   "no result",
+		})
+	}
+
 }
 
 func DecimalTo62() {

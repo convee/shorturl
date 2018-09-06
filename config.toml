@@ -1,18 +1,18 @@
-app_name = "golang-shorturl"
+app_name = "shorurl"
 [log]
-log_name = "shorturl"
+log_name = "shorurl"
 log_path = "logs"
 [mysql]
-[mysql.test]
+[mysql.blog]
 ip = "127.0.0.1"
 port = "3306"
 username = "root"
 password = "password"
 database = "test"
-chartset = "utf8"
-maxIdle = 2
+charset = "utf8"
+maxIdle = 2000
 maxOpen = 500
-maxLifetime = 60
+maxLifetime = 600
 [redis]
 [redis.default]
 Address = "127.0.0.1:6379"

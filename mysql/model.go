@@ -21,25 +21,25 @@ func NewModel() *Model {
 	return &Model{db: mysql.New("test")}
 }
 
-func (m *Model) GetAllShorturl(short string) Shorturl {
-	var shorturl Shorturl
-	err := m.db.QueryRow("select id,long_url,short_url from short_url where short_url=?", short).Scan(&shorturl.Id, &shorturl.Longurl, &shorturl.Shorturl)
+func (m *Model) GetLongurlByShorturl(short string) (string, error) {
+	var longurl string
+	err := m.db.QueryRow("SELECT `long_url` FROM short_url WHERE `short_url` = ?", short).Scan(&longurl)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return shorturl
+	return longurl, nil
 }
 
-func (m *Model) InsertShorturl(shorturl string, longurl string) (id int64) {
+func (m *Model) InsertShorturl(shorturl string, longurl string) (int64, error) {
 	rs, err := m.db.Exec("insert into short_url (long_url, short_url) values (?, ?)", longurl, shorturl)
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
-	id, err = rs.LastInsertId()
+	id, err := rs.LastInsertId()
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
-	return
+	return id, nil
 }
 
 func (m *Model) GetShorturl() {

@@ -3,7 +3,7 @@ app_name = "shorurl"
 log_name = "shorurl"
 log_path = "logs"
 [mysql]
-[mysql.blog]
+[mysql.test]
 ip = "127.0.0.1"
 port = "3306"
 username = "root"

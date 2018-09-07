@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/convee/goboot"
-	"github.com/convee/goboot/logger"
 	"github.com/convee/shorturl/cache"
 	"github.com/convee/shorturl/mysql"
 	"github.com/convee/shorturl/util"
@@ -30,7 +29,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello World"))
 }
 func startHTTPServer(addr string) {
-	fmt.Println("http server starting....")
+	fmt.Println("http server starting on ", addr)
 	http.HandleFunc("/", index)
 	http.HandleFunc("/genShorturl", genShorturl)
 	http.HandleFunc("/getLongurl", getLongurl)
@@ -50,19 +49,20 @@ func getLongurl(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	shorturl := r.Form["shorturl"][0]
 	var longurl string
-	longurlCache := cache.GetLongurlByShorturl(shorturl)
-	logger.Info(fmt.Sprintf("longurlCache:%s", longurlCache))
-	if longurlCache != "" {
+	longurlCache, err := cache.GetLongurlByShorturl(shorturl)
+	fmt.Println(longurlCache, err)
+	if err == nil {
 		longurl = longurlCache
 	} else {
-		longurlData := mysql.NewModel().GetAllShorturl(shorturl).Longurl
-		if longurlData != "" {
-			cache.SetShortUrlCache(shorturl, longurl)
+		longurlData, err := mysql.NewModel().GetLongurlByShorturl(shorturl)
+		fmt.Println(longurlData, err)
+		if err == nil {
 			longurl = longurlData
+			cache.SetShortUrlCache(shorturl, longurl)
 		}
 	}
 	if longurl != "" {
-		var response map[string]string
+		response := make(map[string]string)
 		response["longurl"] = longurl
 		response["shorturl"] = shorturl
 		util.JsonReturn(w, util.Json{

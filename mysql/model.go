@@ -23,11 +23,29 @@ func NewModel() *Model {
 
 func (m *Model) GetLongurlByShorturl(short string) (string, error) {
 	var longurl string
-	err := m.db.QueryRow("SELECT `long_url` FROM short_url WHERE `short_url` = ?", short).Scan(&longurl)
+	err := m.db.QueryRow("SELECT `long_url` FROM short_url WHERE `short_url` = ? limit 1", short).Scan(&longurl)
 	if err != nil {
 		return "", err
 	}
 	return longurl, nil
+}
+
+func (m *Model) GetLongurl(id int) (string, error) {
+	var longurl string
+	err := m.db.QueryRow("SELECT `long_url` FROM short_url WHERE `id` = ? limit 1", id).Scan(&longurl)
+	if err != nil {
+		return "", err
+	}
+	return longurl, nil
+}
+
+func (m *Model) isExists(longurl string) (int, error) {
+	var num int
+	err := m.db.QueryRow("select count(id) as num from short_url where long_url = ?", longurl).Scan(&num)
+	if err != nil {
+		return 0, err
+	}
+	return num, nil
 }
 
 func (m *Model) InsertShorturl(shorturl string, longurl string) (int64, error) {
@@ -42,7 +60,7 @@ func (m *Model) InsertShorturl(shorturl string, longurl string) (int64, error) {
 	return id, nil
 }
 
-func (m *Model) GetShorturl() {
+func (m *Model) GetAll() {
 	var shorturls []Shorturl
 	rows, err := m.db.Query("select * from short_url")
 	if err != nil {

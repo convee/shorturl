@@ -14,7 +14,7 @@ go build -o shorturl //构建
 ## 生成短网址
 
 ```
-curl http://127.0.0.1:8002/genShorturl?longurl=https://convee.cn
+curl http://127.0.0.1:8002/genUrl?longurl=https://convee.cn
 
 ```
 
@@ -42,7 +42,7 @@ curl http://127.0.0.1:8002/genShorturl?longurl=https://convee.cn
 ## 根据短网址获取长网址
 
 ```
-curl http://127.0.0.1:8002/getLongurl?shorturl=abc1
+curl http://127.0.0.1:8002/getUrl?shorturl=abc1
 
 ```
 

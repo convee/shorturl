@@ -28,6 +28,7 @@ func main() {
 func index(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello World"))
 }
+
 func startHTTPServer(addr string) {
 	fmt.Println("http server starting on ", addr)
 	http.HandleFunc("/", index)
@@ -40,26 +41,27 @@ func startHTTPServer(addr string) {
 func genUrl(w http.ResponseWriter, r *http.Request) {
 	var shorturl string
 	r.ParseForm()
-	longurl := r.Form["longurl"][0]
+	url := r.Form["url"][0]
 	h := md5.New()
 	h.Write([]byte("abcdefg!@"))
-	token := hex.EncodeToString(h.Sum([]byte(longurl)))
+	token := hex.EncodeToString(h.Sum([]byte(url)))
 	longCache, err := cache.GetLongurl(token)
 	if err == nil {
 		shorturl = longCache
 	} else {
-		id, err := mysql.NewModel().InsertShorturl("", longurl)
+		id, err := mysql.NewModel().AddUrl(url)
 		fmt.Println(id)
 		if err == nil {
-			shorturl := util.DecimalToAny(int(id), 62)
+			shorturl = util.DecimalToAny(int(id), 62)
 			fmt.Println(shorturl)
 			cache.SetLongurl(token, shorturl)
 		}
 	}
+	fmt.Println(shorturl)
 	if shorturl != "" {
 		response := make(map[string]string)
-		response["longurl"] = longurl
-		response["shorturl"] = shorturl
+		response["url"] = url
+		response["short"] = shorturl
 		util.JsonReturn(w, util.Json{
 			Error: 0,
 			Msg:   "ok",
@@ -76,24 +78,24 @@ func genUrl(w http.ResponseWriter, r *http.Request) {
 //短网址获取长网址
 func getUrl(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	shorturl := r.Form["shorturl"][0]
-	id := util.AnyToDecimal(shorturl, 64)
-	var longurl string
-	longurlCache, err := cache.GetUrl(string(id))
+	short := r.Form["short"][0]
+	id := util.AnyToDecimal(short, 62)
+	var url string
+	urlCache, err := cache.GetUrl(string(id))
 	if err == nil {
-		longurl = longurlCache
+		url = urlCache
 	} else {
-		longurlData, err := mysql.NewModel().GetLongurl(id)
-		fmt.Println(longurlData, err)
+		urlData, err := mysql.NewModel().GetUrl(id)
+		fmt.Println(urlData, err)
 		if err == nil {
-			longurl = longurlData
-			cache.SetUrl(string(id), longurl)
+			url = urlData
+			cache.SetUrl(string(id), url)
 		}
 	}
-	if longurl != "" {
+	if url != "" {
 		response := make(map[string]string)
-		response["longurl"] = longurl
-		response["shorturl"] = shorturl
+		response["url"] = url
+		response["short"] = short
 		util.JsonReturn(w, util.Json{
 			Error: 0,
 			Msg:   "ok",

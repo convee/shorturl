@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/convee/goboot"
+	"github.com/convee/goboot/router"
 	"github.com/convee/shorturl/cache"
 	"github.com/convee/shorturl/mysql"
 	"github.com/convee/shorturl/util"
@@ -25,16 +26,22 @@ func main() {
 
 }
 
-func index(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello World"))
-}
-
 func startHTTPServer(addr string) {
 	fmt.Println("http server starting on ", addr)
-	http.HandleFunc("/", index)
-	http.HandleFunc("/genUrl", genUrl)
-	http.HandleFunc("/getUrl", getUrl)
-	http.ListenAndServe(addr, nil)
+	var r router.Router
+	r.HandleFunc("/genUrl", genUrl).Get()
+	r.HandleFunc("/getUrl", getUrl).Get()
+	r.Handle("/jump", http.RedirectHandler("http://www.convee.cn", 302))
+	r.HandleFunc("/(?P<short>.+)", redirectUrl).Get()
+	http.ListenAndServe(addr, r)
+}
+
+func middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("前置操作")
+		next.ServeHTTP(w, r)
+		fmt.Println("后置操作")
+	})
 }
 
 //长网址转换成短网址
@@ -108,4 +115,27 @@ func getUrl(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
+}
+
+func redirectUrl(w http.ResponseWriter, r *http.Request) {
+	short := r.FormValue(":short")
+	fmt.Println(short)
+	id := util.AnyToDecimal(short, 62)
+	var url string
+	urlCache, err := cache.GetUrl(string(id))
+	if err == nil {
+		url = urlCache
+	} else {
+		urlData, err := mysql.NewModel().GetUrl(id)
+		if err == nil {
+			url = urlData
+			cache.SetUrl(string(id), url)
+		}
+	}
+	fmt.Println(url)
+	if url != "" {
+		http.Redirect(w, r, url, 302)
+	} else {
+		w.Write([]byte("404 page not found"))
+	}
 }

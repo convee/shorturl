@@ -1,5 +1,7 @@
 # golang短网址
 
+## 实现方式
+![](./shorturl.png)
 ## 启动
 ```
 go get -u github.com/convee/shorturl

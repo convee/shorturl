@@ -1,16 +1,12 @@
 #!/bin/bash
 
-SERVER="shorturl"
+SERVER=$1
 BASE_DIR=$PWD
 INTERVAL=2
 
 # 命令行参数，需要手动指定
 ARGS=""
 
-function build()
-{
-    go build -o $SERVER
-}
 function start()
 {
 	if [ "`pgrep $SERVER -u $UID`" != "" ];then
@@ -53,9 +49,6 @@ function stop()
 }
 
 case "$1" in
-    'build')
-    build
-    ;;
 	'start')
 	start
 	;;  
@@ -69,7 +62,7 @@ case "$1" in
 	stop && start
 	;;  
 	*)  
-	echo "usage: $0 {build|start|stop|restart|status}"
+	echo "usage: $0 {start|stop|restart|status} $2"
 	exit 1
 	;;  
 esac

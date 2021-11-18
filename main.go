@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/convee/goboot"
 	"github.com/convee/goboot/router"
@@ -31,7 +32,7 @@ func startHTTPServer(addr string) {
 	var r router.Router
 	r.HandleFunc("/genUrl", genUrl).Get()
 	r.HandleFunc("/getUrl", getUrl).Get()
-	r.Handle("/jump", http.RedirectHandler("http://www.convee.cn", 302))
+	r.Handle("/jump", http.RedirectHandler("http://www.convee.cn", http.StatusPermanentRedirect))
 	r.HandleFunc("/(?P<short>.+)", redirectUrl).Get()
 	http.ListenAndServe(addr, r)
 }
@@ -88,7 +89,7 @@ func getUrl(w http.ResponseWriter, r *http.Request) {
 	short := r.Form["short"][0]
 	id := util.AnyToDecimal(short, 62)
 	var url string
-	urlCache, err := cache.GetUrl(string(id))
+	urlCache, err := cache.GetUrl(strconv.Itoa(id))
 	if err == nil {
 		url = urlCache
 	} else {
@@ -96,7 +97,7 @@ func getUrl(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(urlData, err)
 		if err == nil {
 			url = urlData
-			cache.SetUrl(string(id), url)
+			cache.SetUrl(strconv.Itoa(id), url)
 		}
 	}
 	if url != "" {
@@ -122,19 +123,19 @@ func redirectUrl(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(short)
 	id := util.AnyToDecimal(short, 62)
 	var url string
-	urlCache, err := cache.GetUrl(string(id))
+	urlCache, err := cache.GetUrl(strconv.Itoa(id))
 	if err == nil {
 		url = urlCache
 	} else {
 		urlData, err := mysql.NewModel().GetUrl(id)
 		if err == nil {
 			url = urlData
-			cache.SetUrl(string(id), url)
+			cache.SetUrl(strconv.Itoa(id), url)
 		}
 	}
 	fmt.Println(url)
 	if url != "" {
-		http.Redirect(w, r, url, 302)
+		http.Redirect(w, r, url, http.StatusPermanentRedirect)
 	} else {
 		w.Write([]byte("404 page not found"))
 	}

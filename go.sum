@@ -2,8 +2,6 @@ github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/convee/goboot v0.0.0-20200817061016-70798da5ee19 h1:xMc5ob+phniLGXiWwSj4mymkNCZFaOam8kcMRFbAsQY=
 github.com/convee/goboot v0.0.0-20200817061016-70798da5ee19/go.mod h1:iMGZBlcmInNWxOfQyGtLj/KG/k7LuoKwv/WHzZu8KoU=
-github.com/convee/shorturl v0.0.0-20180910150921-cf64b389c5d5 h1:MP6SnC73zEca74iqO2K3bgV29DLjuvTq23HQL/x4B0A=
-github.com/convee/shorturl v0.0.0-20180910150921-cf64b389c5d5/go.mod h1:g0WW+FbdLes40wmy51kIyCbF2+oTavC3mk7O764QR5w=
 github.com/garyburd/redigo v1.6.2 h1:yE/pwKCrbLpLpQICzYTeZ7JsTA/C53wFTJHaEtRqniM=
 github.com/garyburd/redigo v1.6.2/go.mod h1:NR3MbYisc3/PwhQ00EMzDiPmrwpPxAn5GI05/YaO1SY=
 github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gGcHOs=

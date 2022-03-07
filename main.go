@@ -20,7 +20,7 @@ var (
 )
 
 func main() {
-	flag.StringVar(&addr, "addr", "127.0.0.1:8001", "http server")
+	flag.StringVar(&addr, "addr", "127.0.0.1:8002", "http server")
 	flag.Parse()
 	goboot.Run("config.toml")
 	startHTTPServer(addr)

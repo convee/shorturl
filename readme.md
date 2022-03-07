@@ -1,8 +1,16 @@
-# golang短网址
+# Go短URL服务设计与实现
 
-## 实现方式
+## 短URL的好处
+* 破解短信、微博等平台字数的限制
+* 短链更加友好简洁
+* 方便统计URL的点击量
+* 安全、不暴露访问参数
+
+## 服务设计
 ![](./shorturl.png)
-## 启动
+
+## 服务实现
+### 启动
 ```
 go get -u github.com/convee/shorturl
 
@@ -13,7 +21,7 @@ go build -o shorturl //构建
 ./shorturl  -addr 127.0.0.1:8002 //监听本地8002端口
 
 ```
-## 生成短网址
+### 生成短网址
 
 ```
 curl http://127.0.0.1:8002/genUrl?url=https://convee.cn
@@ -41,7 +49,7 @@ curl http://127.0.0.1:8002/genUrl?url=https://convee.cn
 ```
 
 
-## 根据短网址获取长网址
+### 根据短网址获取长网址
 
 ```
 curl http://127.0.0.1:8002/getUrl?short=abc1
@@ -68,8 +76,8 @@ curl http://127.0.0.1:8002/getUrl?short=abc1
 }
 ```
 
-## 短网址302跳转
+### 短网址302跳转
 ```
-http://127.0.0.1:8002/abc1//302跳转到https://convee.cn
+curl http://127.0.0.1:8002/abc1 
 
 ```

@@ -6,9 +6,9 @@ log_path = "logs"
 [mysql.test]
 ip = "127.0.0.1"
 port = "3306"
-username = "root"
-password = "password"
-database = "test"
+username = "convee"
+password = "TMd6kQ0fayHZewqFUjX8."
+database = "shorturl"
 charset = "utf8"
 maxIdle = 2000
 maxOpen = 500
